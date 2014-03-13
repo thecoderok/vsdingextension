@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="a527a9c1-ec2f-46a0-a6e3-371859c5845b" Version="1.0" Language="en-US" Publisher="Vitalii Ganzha" />
-    <DisplayName>VSPackageInstall</DisplayName>
-    <Description>Visual Studio sound notifications</Description>
+    <Identity Id="26ba08d0-0d25-4479-8684-3054dd122876" Version="1.0" Language="en-US" Publisher="Vitalii Ganzha" />
+    <DisplayName>VsDingExtensionProject</DisplayName>
+    <Description>Information about my package</Description>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />
