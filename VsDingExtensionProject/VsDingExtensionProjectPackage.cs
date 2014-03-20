@@ -1,15 +1,17 @@
 ﻿using System;
+using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Media;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.ComponentModel.Design;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.Win32;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.TestWindow.Extensibility;
 
 namespace VitaliiGanzha.VsDingExtensionProject
 {
@@ -30,6 +32,7 @@ namespace VitaliiGanzha.VsDingExtensionProject
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
+    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     public sealed class VsDingExtensionProjectPackage : Package
     {
         private DTE2 applicationObject;
@@ -59,25 +62,50 @@ namespace VitaliiGanzha.VsDingExtensionProject
         /// </summary>
         protected override void Initialize()
         {
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
+            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}",
+                this.ToString()));
             base.Initialize();
 
-            applicationObject = (DTE2)GetService(typeof(DTE));
+            applicationObject = (DTE2) GetService(typeof (DTE));
 
             applicationObject.Events.BuildEvents.OnBuildDone += BuildEventsOnOnBuildDone;
             applicationObject.Events.DebuggerEvents.OnEnterBreakMode += DebuggerEventsOnOnEnterBreakMode;
 
-            IComponentModel componentModel = Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel)) as IComponentModel;
+            var componentModel =
+                Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof (SComponentModel)) as IComponentModel;
 
+            if (componentModel == null)
+            {
+                throw new Exception("componentModel is null");
+            }
+
+            var operationState = componentModel.GetService<IOperationState>();
+            operationState.StateChanged += OperationStateOnStateChanged;
         }
+
+        private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
+        {
+            if (operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            {
+                PlaySound();
+            }
+        }
+
         private void DebuggerEventsOnOnEnterBreakMode(dbgEventReason reason, ref dbgExecutionAction executionAction)
         {
-            System.Media.SystemSounds.Asterisk.Play();
+            PlaySound();
         }
 
         private void BuildEventsOnOnBuildDone(vsBuildScope scope, vsBuildAction action)
         {
-            System.Media.SystemSounds.Asterisk.Play();
+            PlaySound();
+        }
+
+        private void PlaySound()
+        {
+            SoundPlayer player = new SoundPlayer(Resources.ding);
+            player.PlaySync();
+
         }
 
         #endregion
