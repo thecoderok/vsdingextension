@@ -1,8 +1,9 @@
 ﻿// Guids.cs
 // MUST match guids.h
+
 using System;
 
-namespace VitaliiGanzha.VsDingExtensionProject
+namespace VitaliiGanzha.VsDingExtension
 {
     static class GuidList
     {

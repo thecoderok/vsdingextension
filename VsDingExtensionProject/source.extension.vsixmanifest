@@ -2,8 +2,22 @@
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
     <Identity Id="26ba08d0-0d25-4479-8684-3054dd122876" Version="1.0" Language="en-US" Publisher="Vitalii Ganzha" />
-    <DisplayName>VsDingExtensionProject</DisplayName>
-    <Description>Information about my package</Description>
+    <DisplayName>Visual Studio Ding extension</DisplayName>
+    <Description xml:space="preserve">This small extension will play notification sounds when following events occur:
+- Build Complete
+- Entering debugger mode (breakpoint hit, etc)
+- Unit tests finished to run
+
+Useful when working with big solutions or when build/test run/hitting a breakpoint takes a lot of time and developer can be distructed on other things while he waits.
+
+Just install it and it is ready to use!
+
+This is an open source project, join!
+
+Twitter: @GanzhaVitalii</Description>
+    <MoreInfo>https://github.com/thecoderok/vsdingextension</MoreInfo>
+    <Icon>speaker.ico</Icon>
+    <Tags>productivity</Tags>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0]" />

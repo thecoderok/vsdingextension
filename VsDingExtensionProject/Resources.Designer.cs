@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace VitaliiGanzha.VsDingExtensionProject {
+namespace VitaliiGanzha.VsDingExtension {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace VitaliiGanzha.VsDingExtensionProject {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VitaliiGanzha.VsDingExtensionProject.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("VitaliiGanzha.VsDingExtension.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,24 @@ namespace VitaliiGanzha.VsDingExtensionProject {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream build {
+            get {
+                return ResourceManager.GetStream("build", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream debug {
+            get {
+                return ResourceManager.GetStream("debug", resourceCulture);
             }
         }
         
