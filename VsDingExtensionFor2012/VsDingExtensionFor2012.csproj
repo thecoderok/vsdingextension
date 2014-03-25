@@ -146,6 +146,10 @@
     <Content Include="..\VsDingExtensionProject\Resources\build.wav" />
     <Content Include="..\VsDingExtensionProject\Resources\debug.wav" />
     <Content Include="..\VsDingExtensionProject\Resources\ding.wav" />
+    <Content Include="speaker2012.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="..\VsDingExtensionProject\Resources\Package.ico" />
     <Content Include="..\VsDingExtensionProject\Resources\speaker.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
