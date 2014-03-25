@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Media;
 using System.Runtime.InteropServices;
@@ -41,16 +42,22 @@ namespace VitaliiGanzha.VsDingExtension
             debugSoundPlayer = new SoundPlayer(Resources.debug);
             testCompleteSoundPlayer = new SoundPlayer(Resources.ding);
 
-            applicationObject = (DTE2) GetService(typeof (DTE));
+            applicationObject = (DTE2)GetService(typeof(DTE));
 
             this.buildEvents = applicationObject.Events.BuildEvents;
             this.debugEvents = applicationObject.Events.DebuggerEvents;
 
-            buildEvents.OnBuildDone += (scope, action) => buildCompleteSoundPlayer.Play();
-            debugEvents.OnEnterBreakMode += (dbgEventReason reason, ref dbgExecutionAction action) => debugSoundPlayer.Play();
+            buildEvents.OnBuildDone += (scope, action) => PlaySafe(buildCompleteSoundPlayer);
+            debugEvents.OnEnterBreakMode += delegate(dbgEventReason reason, ref dbgExecutionAction action)
+            {
+                if (reason != dbgEventReason.dbgEventReasonStep)
+                {
+                    PlaySafe(debugSoundPlayer);
+                }
+            };
 
             var componentModel =
-                Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof (SComponentModel)) as IComponentModel;
+                Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel)) as IComponentModel;
 
             if (componentModel == null)
             {
@@ -62,12 +69,24 @@ namespace VitaliiGanzha.VsDingExtension
             operationState.StateChanged += OperationStateOnStateChanged;
         }
 
+        private void PlaySafe(SoundPlayer soundPlayer)
+        {
+            try
+            {
+                soundPlayer.Play();
+            }
+            catch (Exception ex)
+            {
+                ActivityLog.LogError(this.GetType().FullName, ex.Message);
+            }
+        }
+
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            
+
             if (operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                testCompleteSoundPlayer.Play();
+                PlaySafe(testCompleteSoundPlayer);
             }
         }
         #endregion
