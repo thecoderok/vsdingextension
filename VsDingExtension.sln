@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BD9D4DB-8683-4698-8D24-01EE7306F73A}"
 	ProjectSection(SolutionItems) = preProject
 		IntegrationTests.testsettings = IntegrationTests.testsettings
@@ -10,6 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsDingExtensionProject", "VsDingExtensionProject\VsDingExtensionProject.csproj", "{3BEC1E8B-59C5-439E-AE97-8FF4B3E6B0C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsDingExtensionFor2012", "VsDingExtensionFor2012\VsDingExtensionFor2012.csproj", "{F37A5870-9786-4196-A3BE-51FEC6155623}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +21,10 @@ Global
 		{3BEC1E8B-59C5-439E-AE97-8FF4B3E6B0C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BEC1E8B-59C5-439E-AE97-8FF4B3E6B0C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BEC1E8B-59C5-439E-AE97-8FF4B3E6B0C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F37A5870-9786-4196-A3BE-51FEC6155623}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F37A5870-9786-4196-A3BE-51FEC6155623}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F37A5870-9786-4196-A3BE-51FEC6155623}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F37A5870-9786-4196-A3BE-51FEC6155623}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
