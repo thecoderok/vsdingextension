@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Media;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
@@ -95,15 +96,14 @@ namespace VitaliiGanzha.VsDingExtension
         {
             if (onlyOnUnFocus && !ApplicationIsActivated())
             {
-                return;
-            }
-            try
-            {
-                soundPlayer.Play();
-            }
-            catch (Exception ex)
-            {
-                ActivityLog.LogError(GetType().FullName, ex.Message);
+                try
+                {
+                    soundPlayer.Play();
+                }
+                catch (Exception ex)
+                {
+                    ActivityLog.LogError(GetType().FullName, ex.Message);
+                }
             }
         }
 
@@ -125,19 +125,18 @@ namespace VitaliiGanzha.VsDingExtension
             Debug.WriteLine(string.Format("OnlyOnUnFocus: {0}", onlyOnUnFocus));
         }
 
-        public static bool ApplicationIsActivated()
+
+        public bool ApplicationIsActivated()
         {
             var activatedHandle = GetForegroundWindow();
             if (activatedHandle == IntPtr.Zero)
             {
                 return false;       // No window is currently activated
             }
-
             var procId = Process.GetCurrentProcess().Id;
             int activeProcId;
             GetWindowThreadProcessId(activatedHandle, out activeProcId);
-
-            return activeProcId == procId;
+            return activeProcId == procId;            
         }
 
     }
