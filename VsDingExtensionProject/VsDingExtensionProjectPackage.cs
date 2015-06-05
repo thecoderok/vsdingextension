@@ -17,7 +17,7 @@
     using Process = System.Diagnostics.Process;
 
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", "1.1", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     [ProvideOptionPage(typeof(OptionsDialog), "Ding", "Options", 0, 0, true)]

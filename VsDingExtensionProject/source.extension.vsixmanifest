@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="26ba08d0-0d25-4479-8684-3054dd122876" Version="1.2" Language="en-US" Publisher="Vitalii Ganzha" />
+    <Identity Id="26ba08d0-0d25-4479-8684-3054dd122876" Version="1.3" Language="en-US" Publisher="Vitalii Ganzha" />
     <DisplayName>Visual Studio Ding extension</DisplayName>
     <Description xml:space="preserve">This small extension will play notification sounds when following events occur:
 - Build Complete
