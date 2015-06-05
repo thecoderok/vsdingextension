@@ -1,19 +1,21 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Media;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.TestWindow.Extensibility;
-using Process = System.Diagnostics.Process;
-
-namespace VitaliiGanzha.VsDingExtension
+﻿namespace VitaliiGanzha.VsDingExtension
 {
+    using System;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.Media;
+    using System.Runtime.InteropServices;
+
+    using EnvDTE;
+
+    using EnvDTE80;
+
+    using Microsoft.VisualStudio.ComponentModelHost;
+    using Microsoft.VisualStudio.Shell;
+    using Microsoft.VisualStudio.TestWindow.Extensibility;
+
+    using Process = System.Diagnostics.Process;
+
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
@@ -28,29 +30,19 @@ namespace VitaliiGanzha.VsDingExtension
         private SoundPlayer buildCompleteSoundPlayer;
         private SoundPlayer debugSoundPlayer;
         private SoundPlayer testCompleteSoundPlayer;
-        private bool onlyOnUnFocus;
-        private bool onBuild;
-        private bool onTestRunCompleted;
-        private bool onBreakpoint;
+        private OptionsDialog _options = null;
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         private static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
-
         public VsDingExtensionProjectPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
         }
 
         #region Package Members
-
-        protected override void OnSaveOptions(string key, Stream stream)
-        {
-            base.OnSaveOptions(key, stream);
-            ApplySettings();
-        }
 
         protected override void Initialize()
         {
@@ -62,18 +54,17 @@ namespace VitaliiGanzha.VsDingExtension
             testCompleteSoundPlayer = new SoundPlayer(Resources.ding);
 
             applicationObject = (DTE2)GetService(typeof(DTE));
-            ApplySettings();
             buildEvents = applicationObject.Events.BuildEvents;
             debugEvents = applicationObject.Events.DebuggerEvents;
 
             buildEvents.OnBuildDone += (scope, action) =>
             {
-                if (onBuild)
+                if (Options.BuildBeep)
                     PlaySafe(buildCompleteSoundPlayer);
             };
             debugEvents.OnEnterBreakMode += delegate(dbgEventReason reason, ref dbgExecutionAction action)
             {
-                if (reason != dbgEventReason.dbgEventReasonStep && onBreakpoint)
+                if (reason != dbgEventReason.dbgEventReasonStep && Options.BreakpointBeep)
                 {
                     PlaySafe(debugSoundPlayer);
                 }
@@ -92,9 +83,21 @@ namespace VitaliiGanzha.VsDingExtension
             operationState.StateChanged += OperationStateOnStateChanged;
         }
 
+        private OptionsDialog Options
+        {
+            get
+            {
+                if (_options == null)
+                {
+                    _options = (OptionsDialog)GetDialogPage(typeof(OptionsDialog));
+                }
+                return _options;
+            }
+        }
+
         private void PlaySafe(SoundPlayer soundPlayer)
         {
-            if (onlyOnUnFocus && !ApplicationIsActivated())
+            if (ShouldPlaySound())
             {
                 try
                 {
@@ -107,24 +110,23 @@ namespace VitaliiGanzha.VsDingExtension
             }
         }
 
+        private bool ShouldPlaySound()
+        {
+            if (!Options.BeepOnUnfocus)
+            {
+                return true;
+            }
+            return Options.BeepOnUnfocus && !ApplicationIsActivated();
+        }
+
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            if (onTestRunCompleted && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            if (Options.TestBeep && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
                 PlaySafe(testCompleteSoundPlayer);
             }
         }
         #endregion
-
-        private void ApplySettings()
-        {
-            onlyOnUnFocus = (applicationObject.Properties["Ding", "Options"].Item("BeepOnUnfocus").Value as bool?) ?? false;
-            onBreakpoint = (applicationObject.Properties["Ding", "Options"].Item("BreakpointBeep").Value as bool?) ?? true;
-            onTestRunCompleted = (applicationObject.Properties["Ding", "Options"].Item("TestBeep").Value as bool?) ?? true;          
-            onBuild = (applicationObject.Properties["Ding", "Options"].Item("BuildBeep").Value as bool?) ?? true;
-            Debug.WriteLine(string.Format("OnlyOnUnFocus: {0}", onlyOnUnFocus));
-        }
-
 
         public bool ApplicationIsActivated()
         {
