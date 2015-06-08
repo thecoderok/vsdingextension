@@ -21,7 +21,7 @@
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     [ProvideOptionPage(typeof(OptionsDialog), "Ding", "Options", 0, 0, true)]
-    public sealed class VsDingExtensionProjectPackage : Package
+    public sealed class VsDingExtensionProjectPackage : Package, IDisposable
     {
         private DTE2 applicationObject;
         private AddIn addInInstance;
@@ -141,5 +141,23 @@
             return activeProcId == procId;            
         }
 
+        public void Dispose()
+        {
+            SafeDispose(this.debugSoundPlayer);
+            SafeDispose(this.buildCompleteSoundPlayer);
+            SafeDispose(this.testCompleteSoundPlayer);
+        }
+
+        private void SafeDispose(SoundPlayer soundPlayer)
+        {
+            try
+            {
+                soundPlayer.Dispose();
+            }
+            catch (Exception ex)
+            {
+                ActivityLog.LogError(this.GetType().FullName, "Error when disposing player: " + ex.Message);
+            }
+        }
     }
 }
