@@ -2,9 +2,11 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Globalization;
     using System.Media;
     using System.Runtime.InteropServices;
+    using System.Windows.Forms;
 
     using EnvDTE;
 
@@ -59,14 +61,17 @@
 
             buildEvents.OnBuildDone += (scope, action) =>
             {
-                if (Options.BuildBeep)
-                    PlaySafe(buildCompleteSoundPlayer);
+                if (Options.IsBeepOnBuildComplete)
+                {
+                    HandleEventSafe(buildCompleteSoundPlayer, "Build has been completed.");
+                }
             };
+
             debugEvents.OnEnterBreakMode += delegate(dbgEventReason reason, ref dbgExecutionAction action)
             {
-                if (reason != dbgEventReason.dbgEventReasonStep && Options.BreakpointBeep)
+                if (reason != dbgEventReason.dbgEventReasonStep && Options.IsBeepOnBreakpointHit)
                 {
-                    PlaySafe(debugSoundPlayer);
+                    HandleEventSafe(debugSoundPlayer, "Breakpoint was hit.");
                 }
             };
 
@@ -95,7 +100,42 @@
             }
         }
 
-        private void PlaySafe(SoundPlayer soundPlayer)
+        private void HandleEventSafe(SoundPlayer soundPlayer, string messageText)
+        {
+            PlaySoundSafe(soundPlayer);
+            ShowNotifyMessage(messageText);
+        }
+
+        private void ShowNotifyMessage(string messageText)
+        {
+            if (!_options.ShowTrayNotifications)
+            {
+                return;
+            }
+
+            string autoAppendMessage = System.Environment.NewLine + "You can disable this notification in:" + System.Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
+            messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
+
+            System.Threading.Tasks.Task.Run(async () =>
+                {
+                    var tray = new NotifyIcon
+                    {
+                        Icon = SystemIcons.Application,
+                        BalloonTipIcon = ToolTipIcon.Info,
+                        BalloonTipText = messageText,
+                        BalloonTipTitle = "Visual Studio Ding extension",
+                        Visible = true
+                    };
+
+                    tray.ShowBalloonTip(5000);
+                    await System.Threading.Tasks.Task.Delay(5000);
+                    tray.Icon = (Icon)null;
+                    tray.Visible = false;
+                    tray.Dispose();
+                });
+        }
+
+        private void PlaySoundSafe(SoundPlayer soundPlayer)
         {
             if (ShouldPlaySound())
             {
@@ -112,23 +152,23 @@
 
         private bool ShouldPlaySound()
         {
-            if (!Options.BeepOnUnfocus)
+            if (!Options.IsBeepOnlyWhenVisualStudioIsInBackground)
             {
                 return true;
             }
-            return Options.BeepOnUnfocus && !ApplicationIsActivated();
+            return Options.IsBeepOnlyWhenVisualStudioIsInBackground && !ApplicationIsActivated();
         }
 
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            if (Options.TestBeep && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            if (Options.IsBuildOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                PlaySafe(testCompleteSoundPlayer);
+                HandleEventSafe(testCompleteSoundPlayer, "Test execution has been completed.");
             }
         }
         #endregion
 
-        public bool ApplicationIsActivated()
+        private bool ApplicationIsActivated()
         {
             var activatedHandle = GetForegroundWindow();
             if (activatedHandle == IntPtr.Zero)

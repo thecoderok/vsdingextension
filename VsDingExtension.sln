@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5BD9D4DB-8683-4698-8D24-01EE7306F73A}"
 	ProjectSection(SolutionItems) = preProject
 		IntegrationTests.testsettings = IntegrationTests.testsettings
+		README.md = README.md
 		UnitTests.testsettings = UnitTests.testsettings
 	EndProjectSection
 EndProject

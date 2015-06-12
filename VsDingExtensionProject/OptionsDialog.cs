@@ -12,28 +12,33 @@ namespace VitaliiGanzha.VsDingExtension
         [Category("Beeps")]
         [DisplayName("Breakpoint")]
         [Description("Beep when a breakpoint is hit")]
-        public bool BreakpointBeep { get; set; }
+        public bool IsBeepOnBreakpointHit { get; set; }
 
         [Category("Beeps")]
         [DisplayName("Build")]
         [Description("Beep when a build is completed")]
-        public bool BuildBeep { get; set; }
+        public bool IsBeepOnBuildComplete { get; set; }
 
         [Category("Beeps")]
         [DisplayName("Tests")]
         [Description("Beep when a test run is completed")]
-        public bool TestBeep { get; set; }
+        public bool IsBuildOnTestComplete { get; set; }
 
         [DisplayName("Only when in background")]
         [Description("Beep only when Visual Studio does not have focus")]
-        public bool BeepOnUnfocus { get; set; }
+        public bool IsBeepOnlyWhenVisualStudioIsInBackground { get; set; }
+
+        [DisplayName("Show tray notifications")]
+        [Description("Show tray notifications for enabled events")]
+        public bool ShowTrayNotifications { get; set; }
 
         public OptionsDialog()
         {
-            BreakpointBeep = true;
-            BuildBeep = true;
-            TestBeep = true;
-            BeepOnUnfocus = false;
+            IsBeepOnBreakpointHit = true;
+            IsBeepOnBuildComplete = true;
+            IsBuildOnTestComplete = true;
+            ShowTrayNotifications = true;
+            IsBeepOnlyWhenVisualStudioIsInBackground = false;
         }
     }
 }
