@@ -18,6 +18,7 @@ Twitter: @GanzhaVitalii
 Version 1.5:
 * Added Task bar notifications. (https://github.com/thecoderok/vsdingextension/issues/1)
 	It can be disabled in Tools->Options->Ding->Show tray notifications
+
 ![TaskBar notification](https://cloud.githubusercontent.com/assets/3173477/8140297/3633fb52-110f-11e5-8e53-4fcad670bd82.PNG)
 
 
