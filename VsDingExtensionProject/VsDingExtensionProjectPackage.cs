@@ -102,6 +102,11 @@
 
         private void HandleEventSafe(SoundPlayer soundPlayer, string messageText)
         {
+            if (!ShouldPerformNotificationAction())
+            {
+                return;
+            }
+
             PlaySoundSafe(soundPlayer);
             ShowNotifyMessage(messageText);
         }
@@ -137,20 +142,17 @@
 
         private void PlaySoundSafe(SoundPlayer soundPlayer)
         {
-            if (ShouldPlaySound())
+            try
             {
-                try
-                {
-                    soundPlayer.Play();
-                }
-                catch (Exception ex)
-                {
-                    ActivityLog.LogError(GetType().FullName, ex.Message);
-                }
+                soundPlayer.Play();
+            }
+            catch (Exception ex)
+            {
+                ActivityLog.LogError(GetType().FullName, ex.Message);
             }
         }
 
-        private bool ShouldPlaySound()
+        private bool ShouldPerformNotificationAction()
         {
             if (!Options.IsBeepOnlyWhenVisualStudioIsInBackground)
             {
