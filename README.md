@@ -26,3 +26,5 @@ Version 1.4:
 * Added options dialog (Tools->Options->Ding). Now it is possible to enable/disable what sounds to play. Thanks to https://github.com/dannoh
 * Added option to play sounds only if Visual Studio in background. Thanks to https://github.com/dannoh
 * Support for Visual studio 2015
+
+![options](https://cloud.githubusercontent.com/assets/3173477/8140335/89a7e618-110f-11e5-94e2-d626fefb5680.png)
