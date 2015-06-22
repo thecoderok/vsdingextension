@@ -15,6 +15,9 @@ This is an open source project, join!
 
 Twitter: @GanzhaVitalii
 
+Version 1.6:
+* Fixed compatibility issues with Visual studio 2012
+
 Version 1.5:
 * Added Task bar notifications. (https://github.com/thecoderok/vsdingextension/issues/1)
 	It can be disabled in Tools->Options->Ding->Show tray notifications
