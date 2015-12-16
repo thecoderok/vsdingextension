@@ -103,31 +103,44 @@
 
         private void HandleEventSafe(SoundPlayer soundPlayer, string messageText)
         {
+            HandleEventSafe(soundPlayer, messageText, ToolTipIcon.Info);
+        }
+
+        private void HandleEventSafe(SoundPlayer soundPlayer, string messageText, ToolTipIcon icon)
+        {
             if (!ShouldPerformNotificationAction())
             {
                 return;
             }
 
             PlaySoundSafe(soundPlayer);
-            ShowNotifyMessage(messageText);
+            ShowNotifyMessage(messageText, icon);
         }
 
         private void ShowNotifyMessage(string messageText)
+        {
+            ShowNotifyMessage(messageText, ToolTipIcon.Info);
+        }
+
+        private void ShowNotifyMessage(string messageText, ToolTipIcon icon)
         {
             if (!_options.ShowTrayNotifications)
             {
                 return;
             }
 
-            string autoAppendMessage = System.Environment.NewLine + "You can disable this notification in:" + System.Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
-            messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
+            if (Options.ShowTrayDisableMessage)
+            {
+                string autoAppendMessage = System.Environment.NewLine + "You can disable this notification in:" + System.Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
+                messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
+            }
 
             System.Threading.Tasks.Task.Run(async () =>
                 {
                     var tray = new NotifyIcon
                     {
                         Icon = SystemIcons.Application,
-                        BalloonTipIcon = ToolTipIcon.Info,
+                        BalloonTipIcon = icon,
                         BalloonTipText = messageText,
                         BalloonTipTitle = "Visual Studio Ding extension",
                         Visible = true
@@ -171,7 +184,7 @@
                     var testOperation = ((TestRunRequest)operationStateChangedEventArgs.Operation);
                     if (testOperation.DominantTestState == TestState.Failed)
                     {
-                        HandleEventSafe(testCompleteSoundPlayer, "Test execution failed!");
+                        HandleEventSafe(testCompleteSoundPlayer, "Test execution failed!", ToolTipIcon.Error);
                     }
                 }
                 else

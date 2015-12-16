@@ -37,6 +37,10 @@ namespace VitaliiGanzha.VsDingExtension
         [Description("Show tray notifications for enabled events")]
         public bool ShowTrayNotifications { get; set; }
 
+        [DisplayName("Tray notifications message")]
+        [Description("Show message how to disable tray notifications")]
+        public bool ShowTrayDisableMessage { get; set; }
+
         public OptionsDialog()
         {
             IsBeepOnBreakpointHit = true;
@@ -45,6 +49,7 @@ namespace VitaliiGanzha.VsDingExtension
             IsBeepOnTestFailed = false;
             ShowTrayNotifications = true;
             IsBeepOnlyWhenVisualStudioIsInBackground = false;
+            ShowTrayDisableMessage = true;
         }
     }
 }
