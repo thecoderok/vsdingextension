@@ -22,7 +22,12 @@ namespace VitaliiGanzha.VsDingExtension
         [Category("Beeps")]
         [DisplayName("Tests")]
         [Description("Beep when a test run is completed")]
-        public bool IsBuildOnTestComplete { get; set; }
+        public bool IsBeepOnTestComplete { get; set; }
+
+        [Category("Beeps")]
+        [DisplayName("Failed Tests")]
+        [Description("Beep only when a test failed")]
+        public bool IsBeepOnTestFailed { get; set; }
 
         [DisplayName("Only when in background")]
         [Description("Beep only when Visual Studio does not have focus")]
@@ -36,7 +41,8 @@ namespace VitaliiGanzha.VsDingExtension
         {
             IsBeepOnBreakpointHit = true;
             IsBeepOnBuildComplete = true;
-            IsBuildOnTestComplete = true;
+            IsBeepOnTestComplete = true;
+            IsBeepOnTestFailed = false;
             ShowTrayNotifications = true;
             IsBeepOnlyWhenVisualStudioIsInBackground = false;
         }

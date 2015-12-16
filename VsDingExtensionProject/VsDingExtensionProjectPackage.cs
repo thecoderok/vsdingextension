@@ -15,9 +15,10 @@
     using Microsoft.VisualStudio.ComponentModelHost;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.TestWindow.Extensibility;
+    using Microsoft.VisualStudio.TestWindow.Controller;
 
     using Process = System.Diagnostics.Process;
-
+    
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.1", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
@@ -67,7 +68,7 @@
                 }
             };
 
-            debugEvents.OnEnterBreakMode += delegate(dbgEventReason reason, ref dbgExecutionAction action)
+            debugEvents.OnEnterBreakMode += delegate (dbgEventReason reason, ref dbgExecutionAction action)
             {
                 if (reason != dbgEventReason.dbgEventReasonStep && Options.IsBeepOnBreakpointHit)
                 {
@@ -163,9 +164,20 @@
 
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            if (Options.IsBuildOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            if (Options.IsBeepOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                HandleEventSafe(testCompleteSoundPlayer, "Test execution has been completed.");
+                if (Options.IsBeepOnTestFailed)
+                {
+                    var testOperation = ((TestRunRequest)operationStateChangedEventArgs.Operation);
+                    if (testOperation.DominantTestState == TestState.Failed)
+                    {
+                        HandleEventSafe(testCompleteSoundPlayer, "Test execution failed!");
+                    }
+                }
+                else
+                {
+                    HandleEventSafe(testCompleteSoundPlayer, "Test execution has been completed.");
+                }
             }
         }
         #endregion
@@ -180,7 +192,7 @@
             var procId = Process.GetCurrentProcess().Id;
             int activeProcId;
             GetWindowThreadProcessId(activatedHandle, out activeProcId);
-            return activeProcId == procId;            
+            return activeProcId == procId;
         }
 
         public void Dispose()
