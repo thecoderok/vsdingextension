@@ -15,9 +15,10 @@
     using Microsoft.VisualStudio.ComponentModelHost;
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.TestWindow.Extensibility;
+    using Microsoft.VisualStudio.TestWindow.Controller;
 
     using Process = System.Diagnostics.Process;
-
+    
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.1", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
@@ -67,7 +68,7 @@
                 }
             };
 
-            debugEvents.OnEnterBreakMode += delegate(dbgEventReason reason, ref dbgExecutionAction action)
+            debugEvents.OnEnterBreakMode += delegate (dbgEventReason reason, ref dbgExecutionAction action)
             {
                 if (reason != dbgEventReason.dbgEventReasonStep && Options.IsBeepOnBreakpointHit)
                 {
@@ -102,31 +103,44 @@
 
         private void HandleEventSafe(SoundPlayer soundPlayer, string messageText)
         {
+            HandleEventSafe(soundPlayer, messageText, ToolTipIcon.Info);
+        }
+
+        private void HandleEventSafe(SoundPlayer soundPlayer, string messageText, ToolTipIcon icon)
+        {
             if (!ShouldPerformNotificationAction())
             {
                 return;
             }
 
             PlaySoundSafe(soundPlayer);
-            ShowNotifyMessage(messageText);
+            ShowNotifyMessage(messageText, icon);
         }
 
         private void ShowNotifyMessage(string messageText)
+        {
+            ShowNotifyMessage(messageText, ToolTipIcon.Info);
+        }
+
+        private void ShowNotifyMessage(string messageText, ToolTipIcon icon)
         {
             if (!_options.ShowTrayNotifications)
             {
                 return;
             }
 
-            string autoAppendMessage = System.Environment.NewLine + "You can disable this notification in:" + System.Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
-            messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
+            if (Options.ShowTrayDisableMessage)
+            {
+                string autoAppendMessage = System.Environment.NewLine + "You can disable this notification in:" + System.Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
+                messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
+            }
 
             System.Threading.Tasks.Task.Run(async () =>
                 {
                     var tray = new NotifyIcon
                     {
                         Icon = SystemIcons.Application,
-                        BalloonTipIcon = ToolTipIcon.Info,
+                        BalloonTipIcon = icon,
                         BalloonTipText = messageText,
                         BalloonTipTitle = "Visual Studio Ding extension",
                         Visible = true
@@ -163,9 +177,20 @@
 
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            if (Options.IsBuildOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            if (Options.IsBeepOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                HandleEventSafe(testCompleteSoundPlayer, "Test execution has been completed.");
+                if (Options.IsBeepOnTestFailed)
+                {
+                    var testOperation = ((TestRunRequest)operationStateChangedEventArgs.Operation);
+                    if (testOperation.DominantTestState == TestState.Failed)
+                    {
+                        HandleEventSafe(testCompleteSoundPlayer, "Test execution failed!", ToolTipIcon.Error);
+                    }
+                }
+                else
+                {
+                    HandleEventSafe(testCompleteSoundPlayer, "Test execution has been completed.");
+                }
             }
         }
         #endregion
@@ -180,7 +205,7 @@
             var procId = Process.GetCurrentProcess().Id;
             int activeProcId;
             GetWindowThreadProcessId(activatedHandle, out activeProcId);
-            return activeProcId == procId;            
+            return activeProcId == procId;
         }
 
         public void Dispose()
