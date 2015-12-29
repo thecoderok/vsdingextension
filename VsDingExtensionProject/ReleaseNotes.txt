@@ -1,4 +1,12 @@
-﻿Version 1.5:
+﻿Version 1.8:
+* Custom sound for ding  https://github.com/thecoderok/vsdingextension/issues/5
+* Use different sound when tests failed https://github.com/thecoderok/vsdingextension/issues/7
+* Add option to only notify on failed tests (thanks to https://github.com/sboulema for contribution!)
+
+Version 1.6:
+* Fixed compatibility issues with Visual Studio 2012
+
+Version 1.5:
 * Added Task bar notifications. (https://github.com/thecoderok/vsdingextension/issues/1)
 	It can be disabled in Tools->Options->Ding->Show tray notifications
 

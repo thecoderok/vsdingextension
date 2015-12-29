@@ -27,19 +27,11 @@
     public sealed class VsDingExtensionProjectPackage : Package, IDisposable
     {
         private DTE2 applicationObject;
-        private AddIn addInInstance;
         private BuildEvents buildEvents;
         private DebuggerEvents debugEvents;
-        private SoundPlayer buildCompleteSoundPlayer;
-        private SoundPlayer debugSoundPlayer;
-        private SoundPlayer testCompleteSoundPlayer;
         private OptionsDialog _options = null;
+        private Players players = new Players();
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
         public VsDingExtensionProjectPackage()
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", ToString()));
@@ -52,27 +44,28 @@
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", ToString()));
             base.Initialize();
 
-            buildCompleteSoundPlayer = new SoundPlayer(Resources.build);
-            debugSoundPlayer = new SoundPlayer(Resources.debug);
-            testCompleteSoundPlayer = new SoundPlayer(Resources.ding);
-
             applicationObject = (DTE2)GetService(typeof(DTE));
             buildEvents = applicationObject.Events.BuildEvents;
             debugEvents = applicationObject.Events.DebuggerEvents;
 
+            SetupEventHandlers();
+        }
+
+        private void SetupEventHandlers()
+        {
             buildEvents.OnBuildDone += (scope, action) =>
             {
                 if (Options.IsBeepOnBuildComplete)
                 {
-                    HandleEventSafe(buildCompleteSoundPlayer, "Build has been completed.");
+                    HandleEventSafe(EventType.BuildCompleted, "Build has been completed.");
                 }
             };
 
-            debugEvents.OnEnterBreakMode += delegate (dbgEventReason reason, ref dbgExecutionAction action)
+            debugEvents.OnEnterBreakMode += delegate(dbgEventReason reason, ref dbgExecutionAction action)
             {
                 if (reason != dbgEventReason.dbgEventReasonStep && Options.IsBeepOnBreakpointHit)
                 {
-                    HandleEventSafe(debugSoundPlayer, "Breakpoint was hit.");
+                    HandleEventSafe(EventType.BreakpointHit, "Breakpoint was hit.");
                 }
             };
 
@@ -101,19 +94,19 @@
             }
         }
 
-        private void HandleEventSafe(SoundPlayer soundPlayer, string messageText)
+        private void HandleEventSafe(EventType eventType, string messageText)
         {
-            HandleEventSafe(soundPlayer, messageText, ToolTipIcon.Info);
+            HandleEventSafe(eventType, messageText, ToolTipIcon.Info);
         }
 
-        private void HandleEventSafe(SoundPlayer soundPlayer, string messageText, ToolTipIcon icon)
+        private void HandleEventSafe(EventType eventType, string messageText, ToolTipIcon icon)
         {
             if (!ShouldPerformNotificationAction())
             {
                 return;
             }
 
-            PlaySoundSafe(soundPlayer);
+            players.PlaySoundSafe(eventType);
             ShowNotifyMessage(messageText, icon);
         }
 
@@ -154,77 +147,37 @@
                 });
         }
 
-        private void PlaySoundSafe(SoundPlayer soundPlayer)
-        {
-            try
-            {
-                soundPlayer.Play();
-            }
-            catch (Exception ex)
-            {
-                ActivityLog.LogError(GetType().FullName, ex.Message);
-            }
-        }
-
         private bool ShouldPerformNotificationAction()
         {
             if (!Options.IsBeepOnlyWhenVisualStudioIsInBackground)
             {
                 return true;
             }
-            return Options.IsBeepOnlyWhenVisualStudioIsInBackground && !ApplicationIsActivated();
+            return Options.IsBeepOnlyWhenVisualStudioIsInBackground && !WinApiHelper.ApplicationIsActivated();
         }
 
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
             if (Options.IsBeepOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                if (Options.IsBeepOnTestFailed)
+                var testOperation = ((TestRunRequest)operationStateChangedEventArgs.Operation);
+                var isTestsFailed = testOperation.DominantTestState == TestState.Failed;
+                var eventType = isTestsFailed? EventType.TestsCompletedFailure : EventType.TestsCompletedSuccess;
+                if (Options.IsBeepOnTestFailed && isTestsFailed)
                 {
-                    var testOperation = ((TestRunRequest)operationStateChangedEventArgs.Operation);
-                    if (testOperation.DominantTestState == TestState.Failed)
-                    {
-                        HandleEventSafe(testCompleteSoundPlayer, "Test execution failed!", ToolTipIcon.Error);
-                    }
+                    HandleEventSafe(eventType, "Test execution failed!", ToolTipIcon.Error);
                 }
                 else
                 {
-                    HandleEventSafe(testCompleteSoundPlayer, "Test execution has been completed.");
+                    HandleEventSafe(eventType, "Test execution has been completed.");
                 }
             }
         }
         #endregion
 
-        private bool ApplicationIsActivated()
-        {
-            var activatedHandle = GetForegroundWindow();
-            if (activatedHandle == IntPtr.Zero)
-            {
-                return false;       // No window is currently activated
-            }
-            var procId = Process.GetCurrentProcess().Id;
-            int activeProcId;
-            GetWindowThreadProcessId(activatedHandle, out activeProcId);
-            return activeProcId == procId;
-        }
-
         public void Dispose()
         {
-            SafeDispose(this.debugSoundPlayer);
-            SafeDispose(this.buildCompleteSoundPlayer);
-            SafeDispose(this.testCompleteSoundPlayer);
-        }
-
-        private void SafeDispose(SoundPlayer soundPlayer)
-        {
-            try
-            {
-                soundPlayer.Dispose();
-            }
-            catch (Exception ex)
-            {
-                ActivityLog.LogError(this.GetType().FullName, "Error when disposing player: " + ex.Message);
-            }
+            players.Dispose();
         }
     }
 }
