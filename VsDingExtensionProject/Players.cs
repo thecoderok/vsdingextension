@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace VitaliiGanzha.VsDingExtension
             eventTypeToSoundPlayerMapping[EventType.BuildCompleted] = new List<SoundPlayer>() { new SoundPlayer(Resources.build) };
             eventTypeToSoundPlayerMapping[EventType.BreakpointHit] = new List<SoundPlayer>() { new SoundPlayer(Resources.debug) };
             eventTypeToSoundPlayerMapping[EventType.TestsCompletedSuccess] = new List<SoundPlayer>() { new SoundPlayer(Resources.ding) };
-            eventTypeToSoundPlayerMapping[EventType.TestsCompletedFailure] = new List<SoundPlayer>() { new SoundPlayer(Resources.ding) }; // TODO: different sound for failed tests
+            eventTypeToSoundPlayerMapping[EventType.TestsCompletedFailure] = new List<SoundPlayer>() { new SoundPlayer(Resources.test_failed) };
         }
 
         public void PlaySoundSafe(EventType eventType)
@@ -66,6 +66,7 @@ namespace VitaliiGanzha.VsDingExtension
 
     public enum EventType
     {
+        None,
         BuildCompleted,
         BreakpointHit,
         TestsCompletedSuccess,

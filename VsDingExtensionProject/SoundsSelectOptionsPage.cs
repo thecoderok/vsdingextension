@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -36,20 +36,39 @@ namespace VitaliiGanzha.VsDingExtension
             {
                 if (optionsControl == null)
                 {
-                    optionsControl = new SoundSelectControl();
-                    optionsControl.Location = new Point(0, 0);
-                    optionsControl.optionsPage = this;
+                    optionsControl = new SoundSelectControl
+                    {
+                        Location = new Point(0, 0),
+                        OptionsPage = this
+                    };
                 }
                 return optionsControl;
             }
         }
 
-        /// <summary>
-        /// Gets or sets the path to the image file.
-        /// </summary>
-        /// <remarks>The property that needs to be persisted.</remarks>
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-        public string CustomBitmap { get; set; }
+        public bool OverrideOnBuildSound { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string CustomOnBuildSoundLocation { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool OverrideOnTestCompleteSuccesSound { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string CustomOnTestCompleteSuccesSoundLocation { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool OverrideOnTestCompleteFailureSound { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string CustomOnTestCompleteFailureSoundLocation { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public bool OverrideOnBreakpointHitSound { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+        public string CustomOnBreakpointHitSoundLocation { get; set; }
 
         #endregion Properties
 

@@ -169,6 +169,12 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="SingleSoundSelectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SingleSoundSelectControl.Designer.cs">
+      <DependentUpon>SingleSoundSelectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="SoundSelectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -187,6 +193,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SingleSoundSelectControl.resx">
+      <DependentUpon>SingleSoundSelectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SoundSelectControl.resx">
       <DependentUpon>SoundSelectControl.cs</DependentUpon>
@@ -213,6 +222,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="Resources\test-failed.wav" />
     <Content Include="speaker.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

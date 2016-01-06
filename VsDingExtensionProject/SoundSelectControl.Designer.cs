@@ -1,4 +1,4 @@
-﻿namespace VitaliiGanzha.VsDingExtension
+namespace VitaliiGanzha.VsDingExtension
 {
     partial class SoundSelectControl
     {
@@ -28,111 +28,73 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.soundsSelectOptionsPage1 = new VitaliiGanzha.VsDingExtension.SoundsSelectOptionsPage();
-            this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.TestsCompletedFailureControl = new VitaliiGanzha.VsDingExtension.SingleSoundSelectControl();
+            this.TestCompletedSuccessControl = new VitaliiGanzha.VsDingExtension.SingleSoundSelectControl();
+            this.breakPointHitControl = new VitaliiGanzha.VsDingExtension.SingleSoundSelectControl();
+            this.buildCompletedControl = new VitaliiGanzha.VsDingExtension.SingleSoundSelectControl();
             this.SuspendLayout();
             // 
-            // groupBox1
+            // TestsCompletedFailureControl
             // 
-            this.groupBox1.AutoSize = true;
-            this.groupBox1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.groupBox1.Controls.Add(this.panel1);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(452, 371);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Select custom sounds";
+            this.TestsCompletedFailureControl.BoxTitle = "Tests completed, failure";
+            this.TestsCompletedFailureControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.TestsCompletedFailureControl.EventType = VitaliiGanzha.VsDingExtension.EventType.TestsCompletedFailure;
+            this.TestsCompletedFailureControl.Location = new System.Drawing.Point(0, 234);
+            this.TestsCompletedFailureControl.Name = "TestsCompletedFailureControl";
+            this.TestsCompletedFailureControl.Size = new System.Drawing.Size(452, 78);
+            this.TestsCompletedFailureControl.TabIndex = 3;
             // 
-            // panel1
+            // TestCompletedSuccessControl
             // 
-            this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(3, 16);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(446, 53);
-            this.panel1.TabIndex = 0;
+            this.TestCompletedSuccessControl.BoxTitle = "Tests completed, success";
+            this.TestCompletedSuccessControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.TestCompletedSuccessControl.EventType = VitaliiGanzha.VsDingExtension.EventType.TestsCompletedSuccess;
+            this.TestCompletedSuccessControl.Location = new System.Drawing.Point(0, 156);
+            this.TestCompletedSuccessControl.Name = "TestCompletedSuccessControl";
+            this.TestCompletedSuccessControl.Size = new System.Drawing.Size(452, 78);
+            this.TestCompletedSuccessControl.TabIndex = 2;
             // 
-            // panel2
+            // breakPointHitControl
             // 
-            this.panel2.Controls.Add(this.textBox1);
-            this.panel2.Controls.Add(this.button1);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 18);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(446, 35);
-            this.panel2.TabIndex = 1;
+            this.breakPointHitControl.BoxTitle = "Breakpoint hit";
+            this.breakPointHitControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.breakPointHitControl.EventType = VitaliiGanzha.VsDingExtension.EventType.BreakpointHit;
+            this.breakPointHitControl.Location = new System.Drawing.Point(0, 78);
+            this.breakPointHitControl.Name = "breakPointHitControl";
+            this.breakPointHitControl.Size = new System.Drawing.Size(452, 78);
+            this.breakPointHitControl.TabIndex = 1;
             // 
-            // textBox1
+            // buildCompletedControl
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(0, 0);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(349, 20);
-            this.textBox1.TabIndex = 1;
-            // 
-            // button1
-            // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.button1.Location = new System.Drawing.Point(415, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(31, 32);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "...";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Name = "label1";
-            this.label1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
-            this.label1.Size = new System.Drawing.Size(85, 18);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Build completed:";
-            // 
-            // soundsSelectOptionsPage1
-            // 
-            this.soundsSelectOptionsPage1.CustomBitmap = null;
+            this.buildCompletedControl.BoxTitle = "Build completed";
+            this.buildCompletedControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buildCompletedControl.EventType = VitaliiGanzha.VsDingExtension.EventType.BuildCompleted;
+            this.buildCompletedControl.Location = new System.Drawing.Point(0, 0);
+            this.buildCompletedControl.Name = "buildCompletedControl";
+            this.buildCompletedControl.Size = new System.Drawing.Size(452, 78);
+            this.buildCompletedControl.TabIndex = 0;
             // 
             // SoundSelectControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBox1);
+            this.AutoScroll = true;
+            this.Controls.Add(this.TestsCompletedFailureControl);
+            this.Controls.Add(this.TestCompletedSuccessControl);
+            this.Controls.Add(this.breakPointHitControl);
+            this.Controls.Add(this.buildCompletedControl);
             this.Name = "SoundSelectControl";
             this.Size = new System.Drawing.Size(452, 371);
-            this.groupBox1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
-        private SoundsSelectOptionsPage soundsSelectOptionsPage1;
+        private SingleSoundSelectControl buildCompletedControl;
+        private SingleSoundSelectControl TestCompletedSuccessControl;
+        private SingleSoundSelectControl breakPointHitControl;
+        private SingleSoundSelectControl TestsCompletedFailureControl;
 
     }
 }

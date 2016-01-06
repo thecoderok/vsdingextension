@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -12,7 +12,25 @@ namespace VitaliiGanzha.VsDingExtension
 {
     public partial class SoundSelectControl : UserControl
     {
-        internal SoundsSelectOptionsPage optionsPage;
+        private SoundsSelectOptionsPage optionsPage;
+
+        internal SoundsSelectOptionsPage OptionsPage
+        {
+            get { return this.optionsPage; }
+            set
+            {
+                this.optionsPage = value;
+                UpdateOptionPage();
+            }
+        }
+
+        private void UpdateOptionPage()
+        {
+            this.TestCompletedSuccessControl.OptionsPage = this.optionsPage;
+            this.TestsCompletedFailureControl.OptionsPage = this.optionsPage;
+            this.buildCompletedControl.OptionsPage = this.optionsPage;
+            this.breakPointHitControl.OptionsPage = this.optionsPage;
+        }
 
         public SoundSelectControl()
         {
