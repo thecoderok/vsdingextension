@@ -3,6 +3,7 @@ namespace VitaliiGanzha.VsDingExtension
     using System;
     using System.ComponentModel;
     using System.IO;
+    using System.Media;
     using System.Windows.Forms;
 
     public partial class SingleSoundSelectControl : UserControl
@@ -132,6 +133,34 @@ namespace VitaliiGanzha.VsDingExtension
 
             this.selectedFileEdit.Text = pathToFile;
             this.chkUseDifferentSound.Checked = useDifferentSound;
+        }
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            const string title = "Can't play sound";
+            if (string.IsNullOrWhiteSpace(this.selectedFileEdit.Text))
+            {
+                MessageBox.Show("No file selected", title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (!File.Exists(this.selectedFileEdit.Text))
+            {
+                MessageBox.Show("File does not exists", title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                using (var player = new SoundPlayer(this.selectedFileEdit.Text))
+                {
+                    player.Play();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(System.Environment.NewLine + "Error: " + ex.Message, title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
