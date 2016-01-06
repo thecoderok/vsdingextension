@@ -15,6 +15,14 @@ This is an open source project, join!
 
 Twitter: @GanzhaVitalii
 
+Version 1.8:
+* Users now will be able to select their own sounds (Issue #5)
+* There will be a different sound when any of the tests have failed (Issue #7)
+* There is a separate option to play sound only when tests failed (thanks to https://github.com/sboulema for pull request).
+
+![Custom sounds](https://cloud.githubusercontent.com/assets/3173477/12151990/c87702c0-b466-11e5-82eb-7602c430ae7c.png)
+
+
 Version 1.6:
 * Fixed compatibility issues with Visual studio 2012
 
