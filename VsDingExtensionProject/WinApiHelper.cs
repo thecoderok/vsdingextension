@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VitaliiGanzha.VsDingExtension
 {
+    using System;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
+
     public static class WinApiHelper
     {
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]

@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsDingExtensionProject", "V
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VsDingExtensionFor2012", "VsDingExtensionFor2012\VsDingExtensionFor2012.csproj", "{F37A5870-9786-4196-A3BE-51FEC6155623}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleTestProject", "SampleTestProject\SampleTestProject.csproj", "{3A315AD2-E21E-4FC6-A601-795989A45514}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +30,10 @@ Global
 		{F37A5870-9786-4196-A3BE-51FEC6155623}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F37A5870-9786-4196-A3BE-51FEC6155623}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F37A5870-9786-4196-A3BE-51FEC6155623}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A315AD2-E21E-4FC6-A601-795989A45514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A315AD2-E21E-4FC6-A601-795989A45514}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A315AD2-E21E-4FC6-A601-795989A45514}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A315AD2-E21E-4FC6-A601-795989A45514}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,19 @@ namespace VitaliiGanzha.VsDingExtension
     {
         private EventType eventType = EventType.None;
 
-        public SoundsSelectOptionsPage OptionsPage = null;
+        public SoundsSelectOptionsPage optionsPage = null;
+
+        public SoundsSelectOptionsPage OptionsPage
+        {
+            get { return this.optionsPage; }
+            set
+            {
+                this.optionsPage = value;
+                this.ReadOptions();
+                this.optionsPage.StoreOptionsNotifier += this.StoreOptions;
+                this.optionsPage.OnActivateHandler += this.ReadOptions;
+            }
+        }
 
         [Category("Data")]
         [Description("Gets or sets the event type of the sound to override sound for")]
@@ -30,13 +42,11 @@ namespace VitaliiGanzha.VsDingExtension
         public SingleSoundSelectControl()
         {
             InitializeComponent();
-            ReadOptions();
         }
 
         private void chkUseDifferentSound_CheckedChanged(object sender, System.EventArgs e)
         {
             ValidateProperties();
-            this.StoreOptions();
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
@@ -52,7 +62,6 @@ namespace VitaliiGanzha.VsDingExtension
             if (File.Exists(file))
             {
                 this.selectedFileEdit.Text = file;
-                this.StoreOptions();
             }
         }
 

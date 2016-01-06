@@ -1,24 +1,61 @@
-using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Media;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace VitaliiGanzha.VsDingExtension
 {
-    public class Players : IDisposable
-    {
-        private readonly Dictionary<EventType, IList<SoundPlayer>> eventTypeToSoundPlayerMapping;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Media;
+    using Microsoft.VisualStudio.Shell;
 
-        public Players()
+    public sealed class Players : IDisposable
+    {
+        private readonly SoundsSelectOptionsPage overridesSettings;
+        private Dictionary<EventType, IList<SoundPlayer>> eventTypeToSoundPlayerMapping;
+
+        public Players(SoundsSelectOptionsPage overridesSettings)
         {
-            eventTypeToSoundPlayerMapping = new Dictionary<EventType, IList<SoundPlayer>>();
-            eventTypeToSoundPlayerMapping[EventType.BuildCompleted] = new List<SoundPlayer>() { new SoundPlayer(Resources.build) };
-            eventTypeToSoundPlayerMapping[EventType.BreakpointHit] = new List<SoundPlayer>() { new SoundPlayer(Resources.debug) };
-            eventTypeToSoundPlayerMapping[EventType.TestsCompletedSuccess] = new List<SoundPlayer>() { new SoundPlayer(Resources.ding) };
-            eventTypeToSoundPlayerMapping[EventType.TestsCompletedFailure] = new List<SoundPlayer>() { new SoundPlayer(Resources.test_failed) };
+            this.overridesSettings = overridesSettings;
+            this.SetupSounds();
+        }
+
+        private void SetupSounds()
+        {
+            // Add regular sounds
+            var tempMapping = new Dictionary<EventType, IList<SoundPlayer>>();
+            tempMapping[EventType.BuildCompleted] = new List<SoundPlayer>() { new SoundPlayer(Resources.build) };
+            tempMapping[EventType.BreakpointHit] = new List<SoundPlayer>() { new SoundPlayer(Resources.debug) };
+            tempMapping[EventType.TestsCompletedSuccess] = new List<SoundPlayer>()
+            {
+                new SoundPlayer(Resources.ding)
+            };
+            tempMapping[EventType.TestsCompletedFailure] = new List<SoundPlayer>()
+            {
+                new SoundPlayer(Resources.test_failed)
+            };
+
+            // Add custom sounds
+            this.AddSoundOverrideIf(tempMapping, this.overridesSettings.OverrideOnBuildSound, this.overridesSettings.CustomOnBuildSoundLocation, EventType.BuildCompleted);
+            this.AddSoundOverrideIf(tempMapping, this.overridesSettings.OverrideOnBreakpointHitSound, this.overridesSettings.CustomOnBreakpointHitSoundLocation, EventType.BreakpointHit);
+            this.AddSoundOverrideIf(tempMapping, this.overridesSettings.OverrideOnTestCompleteFailureSound, this.overridesSettings.CustomOnTestCompleteFailureSoundLocation, EventType.TestsCompletedFailure);
+            this.AddSoundOverrideIf(tempMapping, this.overridesSettings.OverrideOnTestCompleteSuccesSound, this.overridesSettings.CustomOnTestCompleteSuccesSoundLocation, EventType.TestsCompletedSuccess);
+
+            this.eventTypeToSoundPlayerMapping = tempMapping;
+        }
+
+        private void AddSoundOverrideIf(Dictionary<EventType, IList<SoundPlayer>> tempMapping, bool shouldAdd, string fileLocation, EventType eventType)
+        {
+            if (shouldAdd)
+            {
+                if (!string.IsNullOrWhiteSpace(fileLocation) &&
+                    File.Exists(fileLocation))
+                {
+                    tempMapping[eventType].Insert(0, new SoundPlayer(fileLocation));
+                }
+            }
+        }
+
+        public void SoundSettingsChanged()
+        {
+            this.SetupSounds();
         }
 
         public void PlaySoundSafe(EventType eventType)

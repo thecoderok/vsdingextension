@@ -18,6 +18,12 @@ namespace VitaliiGanzha.VsDingExtension
 
         #region Properties
 
+        public Action OnApplyHandler { get; set; }
+
+        public Action StoreOptionsNotifier { get; set; }
+
+        public Action OnActivateHandler { get; set; }
+
         /// <summary>
         /// Gets the window an instance of DialogPage that it uses as its user interface.
         /// </summary>
@@ -43,6 +49,27 @@ namespace VitaliiGanzha.VsDingExtension
                     };
                 }
                 return optionsControl;
+            }
+        }
+
+        protected override void OnApply(DialogPage.PageApplyEventArgs e)
+        {
+            if (this.StoreOptionsNotifier != null)
+            {
+                this.StoreOptionsNotifier();
+            }
+
+            if (this.OnApplyHandler != null)
+            {
+                this.OnApplyHandler();
+            }
+        }
+
+        protected override void OnActivate(CancelEventArgs cancelEventArgs)
+        {
+            if (this.OnActivateHandler != null)
+            {
+                this.OnActivateHandler();
             }
         }
 

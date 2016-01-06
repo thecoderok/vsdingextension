@@ -1,24 +1,19 @@
-﻿namespace VitaliiGanzha.VsDingExtension
+namespace VitaliiGanzha.VsDingExtension
 {
     using System;
     using System.Diagnostics;
     using System.Drawing;
     using System.Globalization;
-    using System.Media;
     using System.Runtime.InteropServices;
     using System.Windows.Forms;
-
     using EnvDTE;
-
     using EnvDTE80;
-
     using Microsoft.VisualStudio.ComponentModelHost;
     using Microsoft.VisualStudio.Shell;
-    using Microsoft.VisualStudio.TestWindow.Extensibility;
     using Microsoft.VisualStudio.TestWindow.Controller;
+    using Microsoft.VisualStudio.TestWindow.Extensibility;
+    using Task = System.Threading.Tasks.Task;
 
-    using Process = System.Diagnostics.Process;
-    
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.1", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
@@ -31,7 +26,8 @@
         private BuildEvents buildEvents;
         private DebuggerEvents debugEvents;
         private OptionsDialog _options = null;
-        private Players players = new Players();
+        private SoundsSelectOptionsPage soundOverridesSettings = null;
+        private Players players = null;
 
         public VsDingExtensionProjectPackage()
         {
@@ -49,6 +45,8 @@
             buildEvents = applicationObject.Events.BuildEvents;
             debugEvents = applicationObject.Events.DebuggerEvents;
 
+            players = new Players(this.SoundSettingsOverrides);
+            this.soundOverridesSettings.OnApplyHandler += () => this.players.SoundSettingsChanged();
             SetupEventHandlers();
         }
 
@@ -95,12 +93,19 @@
             }
         }
 
-        private void HandleEventSafe(EventType eventType, string messageText)
+        private SoundsSelectOptionsPage SoundSettingsOverrides
         {
-            HandleEventSafe(eventType, messageText, ToolTipIcon.Info);
+            get
+            {
+                if (this.soundOverridesSettings == null)
+                {
+                    this.soundOverridesSettings = (SoundsSelectOptionsPage)GetDialogPage(typeof(SoundsSelectOptionsPage));
+                }
+                return this.soundOverridesSettings;
+            }
         }
 
-        private void HandleEventSafe(EventType eventType, string messageText, ToolTipIcon icon)
+        private void HandleEventSafe(EventType eventType, string messageText, ToolTipIcon icon = ToolTipIcon.Info)
         {
             if (!ShouldPerformNotificationAction())
             {
@@ -111,12 +116,7 @@
             ShowNotifyMessage(messageText, icon);
         }
 
-        private void ShowNotifyMessage(string messageText)
-        {
-            ShowNotifyMessage(messageText, ToolTipIcon.Info);
-        }
-
-        private void ShowNotifyMessage(string messageText, ToolTipIcon icon)
+        private void ShowNotifyMessage(string messageText, ToolTipIcon icon = ToolTipIcon.Info)
         {
             if (!_options.ShowTrayNotifications)
             {
@@ -125,11 +125,11 @@
 
             if (Options.ShowTrayDisableMessage)
             {
-                string autoAppendMessage = System.Environment.NewLine + "You can disable this notification in:" + System.Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
+                string autoAppendMessage = Environment.NewLine + "You can disable this notification in:" + Environment.NewLine + "Tools->Options->Ding->Show tray notifications";
                 messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
             }
 
-            System.Threading.Tasks.Task.Run(async () =>
+            Task.Run(async () =>
                 {
                     var tray = new NotifyIcon
                     {
@@ -141,7 +141,7 @@
                     };
 
                     tray.ShowBalloonTip(5000);
-                    await System.Threading.Tasks.Task.Delay(5000);
+                    await Task.Delay(5000);
                     tray.Icon = (Icon)null;
                     tray.Visible = false;
                     tray.Dispose();
