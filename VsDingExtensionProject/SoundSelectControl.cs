@@ -14,7 +14,7 @@ namespace VitaliiGanzha.VsDingExtension
     {
         private SoundsSelectOptionsPage optionsPage;
 
-        internal SoundsSelectOptionsPage OptionsPage
+        public SoundsSelectOptionsPage OptionsPage
         {
             get { return this.optionsPage; }
             set

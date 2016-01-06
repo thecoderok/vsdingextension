@@ -63,6 +63,7 @@ namespace VitaliiGanzha.VsDingExtension
             {
                 this.OnApplyHandler();
             }
+            base.OnApply(e);
         }
 
         protected override void OnActivate(CancelEventArgs cancelEventArgs)
@@ -71,6 +72,7 @@ namespace VitaliiGanzha.VsDingExtension
             {
                 this.OnActivateHandler();
             }
+            base.OnActivate(cancelEventArgs);
         }
 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
