@@ -15,6 +15,10 @@ This is an open source project, join!
 
 Twitter: @GanzhaVitalii
 
+Version 1.9:
+* Fixed defect #8: VS 2015 stops working when looking at Test Manager Window
+
+
 Version 1.8:
 * Users now will be able to select their own sounds (Issue #5)
 * There will be a different sound when any of the tests have failed (Issue #7)
