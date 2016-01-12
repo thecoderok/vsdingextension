@@ -26,7 +26,7 @@ namespace VitaliiGanzha.VsDingExtension
 
         [Category("Beeps")]
         [DisplayName("Failed Tests")]
-        [Description("Beep only when a test failed")]
+        [Description("Beep when a test run is completed and there are failed tests")]
         public bool IsBeepOnTestFailed { get; set; }
 
         [DisplayName("Only when in background")]

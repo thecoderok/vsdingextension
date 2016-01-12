@@ -12,7 +12,8 @@ namespace VitaliiGanzha.VsDingExtension
     using Microsoft.VisualStudio.Shell;
     using Microsoft.VisualStudio.TestWindow.Extensibility;
     using Task = System.Threading.Tasks.Task;
-
+    using Windows.UI.Notifications;
+    using System.Linq;
     [PackageRegistration(UseManagedResourcesOnly = true)]
     [InstalledProductRegistration("#110", "#112", "1.1", IconResourceID = 400)]
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
@@ -128,7 +129,13 @@ namespace VitaliiGanzha.VsDingExtension
                 messageText = string.Format("{0}{1}", messageText, autoAppendMessage);
             }
 
-            Task.Run(async () =>
+            if (Win8OrHigher())
+            {
+                ShowToast("Visual Studio Ding extension", messageText);
+            }
+            else
+            {
+                Task.Run(async () =>
                 {
                     var tray = new NotifyIcon
                     {
@@ -145,6 +152,40 @@ namespace VitaliiGanzha.VsDingExtension
                     tray.Visible = false;
                     tray.Dispose();
                 });
+            }
+        }
+
+        private bool Win8OrHigher()
+        {
+            return Environment.OSVersion.Version >= new Version(6, 2, 9200, 0);
+        }
+
+        private void ShowToast(string title, string message)
+        {
+            var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText02);
+            toastXml.GetElementsByTagName("text").First().AppendChild(toastXml.CreateTextNode(title));
+            toastXml.GetElementsByTagName("text").Last().AppendChild(toastXml.CreateTextNode(message));
+
+            var dte = GetGlobalService(typeof(DTE)) as DTE;
+            var notifier = ToastNotificationManager.CreateToastNotifier(EditionToAppUserModelId(dte.Edition));
+            notifier.Show(new ToastNotification(toastXml));
+        }
+
+        private string EditionToAppUserModelId(string edition)
+        {
+            string ApplicationID = "VisualStudio.11.0";
+            switch (edition)
+            {
+                case "WD Express":
+                    return "VWDExpress.11.0";
+                case "Desktop Express":
+                    return "WDExpress.11.0";
+                case "VSWin Express":
+                    return "VSWinExpress.11.0";
+                case "PD Express":
+                    return "VPDExpress.11.0";
+            }
+            return ApplicationID;
         }
 
         private bool ShouldPerformNotificationAction()
@@ -158,32 +199,36 @@ namespace VitaliiGanzha.VsDingExtension
 
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            if (Options.IsBeepOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            if (operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                try
+                if (Options.IsBeepOnTestComplete)
                 {
-                    // Issue #8: VS 2015 stops working when looking at Test Manager Window #8 
-                    // This extention can't take dependency on Microsoft.VisualStudio.TestWindow.Core.dll
-                    // Because it will crash VS 2015. But DominantTestState is defined in that assembly.
-                    // So as a workaround - cast it to dynamic (ewww, but alternative - to create new project/build and publish it separately.)
-                    var testOperation = (dynamic)(operationStateChangedEventArgs.Operation);
-                    var dominantTestState = (TestState)testOperation.DominantTestState;
-                    var isTestsFailed = dominantTestState == TestState.Failed;
-                    var eventType = isTestsFailed ? EventType.TestsCompletedFailure : EventType.TestsCompletedSuccess;
-                    if (Options.IsBeepOnTestFailed && isTestsFailed)
-                    {
-                        HandleEventSafe(eventType, "Test execution failed!", ToolTipIcon.Error);
-                    }
-                    else
-                    {
-                        HandleEventSafe(eventType, "Test execution has been completed.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ActivityLog.LogError(GetType().FullName, ex.Message);
-                    // Unable to get dominate test status, beep default sound for test
                     HandleEventSafe(EventType.TestsCompletedSuccess, "Test execution has been completed.");
+                }
+
+                if (Options.IsBeepOnTestFailed)
+                {
+                    try
+                    {
+                        // Issue #8: VS 2015 stops working when looking at Test Manager Window #8 
+                        // This extention can't take dependency on Microsoft.VisualStudio.TestWindow.Core.dll
+                        // Because it will crash VS 2015. But DominantTestState is defined in that assembly.
+                        // So as a workaround - cast it to dynamic (ewww, but alternative - to create new project/build and publish it separately.)
+                        var testOperation = (dynamic)(operationStateChangedEventArgs.Operation);
+                        var dominantTestState = (TestState)testOperation.DominantTestState;
+                        var isTestsFailed = dominantTestState == TestState.Failed;
+                        var eventType = isTestsFailed ? EventType.TestsCompletedFailure : EventType.TestsCompletedSuccess;
+                        if (isTestsFailed)
+                        {
+                            HandleEventSafe(eventType, "Test execution failed!", ToolTipIcon.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ActivityLog.LogError(GetType().FullName, ex.Message);
+                        // Unable to get dominate test status, beep default sound for test
+                        HandleEventSafe(EventType.TestsCompletedSuccess, "Test execution has been completed.");
+                    }
                 }
             }
         }
