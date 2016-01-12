@@ -158,32 +158,36 @@ namespace VitaliiGanzha.VsDingExtension
 
         private void OperationStateOnStateChanged(object sender, OperationStateChangedEventArgs operationStateChangedEventArgs)
         {
-            if (Options.IsBeepOnTestComplete && operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
+            if (operationStateChangedEventArgs.State.HasFlag(TestOperationStates.TestExecutionFinished))
             {
-                try
+                if (Options.IsBeepOnTestComplete)
                 {
-                    // Issue #8: VS 2015 stops working when looking at Test Manager Window #8 
-                    // This extention can't take dependency on Microsoft.VisualStudio.TestWindow.Core.dll
-                    // Because it will crash VS 2015. But DominantTestState is defined in that assembly.
-                    // So as a workaround - cast it to dynamic (ewww, but alternative - to create new project/build and publish it separately.)
-                    var testOperation = (dynamic)(operationStateChangedEventArgs.Operation);
-                    var dominantTestState = (TestState)testOperation.DominantTestState;
-                    var isTestsFailed = dominantTestState == TestState.Failed;
-                    var eventType = isTestsFailed ? EventType.TestsCompletedFailure : EventType.TestsCompletedSuccess;
-                    if (Options.IsBeepOnTestFailed && isTestsFailed)
-                    {
-                        HandleEventSafe(eventType, "Test execution failed!", ToolTipIcon.Error);
-                    }
-                    else
-                    {
-                        HandleEventSafe(eventType, "Test execution has been completed.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ActivityLog.LogError(GetType().FullName, ex.Message);
-                    // Unable to get dominate test status, beep default sound for test
                     HandleEventSafe(EventType.TestsCompletedSuccess, "Test execution has been completed.");
+                }
+
+                if (Options.IsBeepOnTestFailed)
+                {
+                    try
+                    {
+                        // Issue #8: VS 2015 stops working when looking at Test Manager Window #8 
+                        // This extention can't take dependency on Microsoft.VisualStudio.TestWindow.Core.dll
+                        // Because it will crash VS 2015. But DominantTestState is defined in that assembly.
+                        // So as a workaround - cast it to dynamic (ewww, but alternative - to create new project/build and publish it separately.)
+                        var testOperation = (dynamic)(operationStateChangedEventArgs.Operation);
+                        var dominantTestState = (TestState)testOperation.DominantTestState;
+                        var isTestsFailed = dominantTestState == TestState.Failed;
+                        var eventType = isTestsFailed ? EventType.TestsCompletedFailure : EventType.TestsCompletedSuccess;
+                        if (isTestsFailed)
+                        {
+                            HandleEventSafe(eventType, "Test execution failed!", ToolTipIcon.Error);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ActivityLog.LogError(GetType().FullName, ex.Message);
+                        // Unable to get dominate test status, beep default sound for test
+                        HandleEventSafe(EventType.TestsCompletedSuccess, "Test execution has been completed.");
+                    }
                 }
             }
         }
