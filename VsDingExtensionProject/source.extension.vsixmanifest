@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-  <Metadata>
-    <Identity Id="26ba08d0-0d25-4479-8684-3054dd122876" Version="1.12" Language="en-US" Publisher="Vitalii Ganzha" />
-    <DisplayName>Visual Studio Ding extension</DisplayName>
-    <Description xml:space="preserve">This small extension will play notification sounds when following events occur:
+    <Metadata>
+        <Identity Id="26ba08d0-0d25-4479-8684-3054dd122876" Version="1.12" Language="en-US" Publisher="Vitalii Ganzha" />
+        <DisplayName>Visual Studio Ding extension</DisplayName>
+        <Description xml:space="preserve">This small extension will play notification sounds when following events occur:
 - Build Complete
 - Entering debugger mode (breakpoint hit, etc)
 - Unit tests finished to run
@@ -15,23 +15,26 @@ Just install it and it is ready to use!
 This is an open source project, join!
 
 Twitter: @GanzhaVitalii</Description>
-    <MoreInfo>https://github.com/thecoderok/vsdingextension</MoreInfo>
-    <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
-    <Icon>speaker.ico</Icon>
-    <Tags>productivity</Tags>
-  </Metadata>
-  <Installation InstalledByMsi="false">
-    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0,]" />
-    <InstallationTarget Version="[12.0,]" Id="Microsoft.VisualStudio.Premium" />
-    <InstallationTarget Version="[12.0,]" Id="Microsoft.VisualStudio.Ultimate" />
-    <InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.Community" />
-    <InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.Enterprise" />
-  </Installation>
-  <Dependencies>
-    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
-    <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0]" />
-  </Dependencies>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-  </Assets>
+        <MoreInfo>https://github.com/thecoderok/vsdingextension</MoreInfo>
+        <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
+        <Icon>speaker.ico</Icon>
+        <Tags>productivity</Tags>
+    </Metadata>
+    <Installation InstalledByMsi="false">
+        <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[12.0,]" />
+        <InstallationTarget Version="[12.0,]" Id="Microsoft.VisualStudio.Premium" />
+        <InstallationTarget Version="[12.0,]" Id="Microsoft.VisualStudio.Ultimate" />
+        <InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.Community" />
+        <InstallationTarget Version="[14.0,]" Id="Microsoft.VisualStudio.Enterprise" />
+    </Installation>
+    <Dependencies>
+        <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.12.0" DisplayName="Visual Studio MPF 12.0" d:Source="Installed" Version="[12.0]" />
+    </Dependencies>
+    <Assets>
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    </Assets>
+    <Prerequisites>
+        <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[12.0,)" DisplayName="Visual Studio core editor" />
+    </Prerequisites>
 </PackageManifest>

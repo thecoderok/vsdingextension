@@ -18,7 +18,7 @@ namespace VitaliiGanzha.VsDingExtension
     [Guid(GuidList.guidVsDingExtensionProjectPkgString)]
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     [ProvideOptionPage(typeof(OptionsDialog), "Ding", "General settings", 0, 0, true)]
-    [ProvideOptionPage(typeof(SoundsSelectOptionsPage), "Ding", "Overrride sounds", 0, 0, true)]
+    [ProvideOptionPage(typeof(SoundsSelectOptionsPage), "Ding", "Override sounds", 0, 0, true)]
     public sealed class VsDingExtensionProjectPackage : Package, IDisposable
     {
         private DTE2 applicationObject;
